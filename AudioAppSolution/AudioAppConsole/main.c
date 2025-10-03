@@ -6,6 +6,13 @@
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
 
+#define MONO 1
+#define STEREO 2
+#define CD 44100
+#define DVD 48000
+#define HiRes1 96000
+#define HiRes2 192000
+
 int main(){
 
     //Checks if SDL initialized
@@ -15,7 +22,7 @@ int main(){
     }
 
     //Checks if SDL2-mixer initialized
-    if (Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 4096) == -1){
+    if (Mix_OpenAudio(DVD, MIX_DEFAULT_FORMAT, STEREO, 4096) == -1){
         printf("SDL2_mixer could not be initialized!\nSDL_Error: %s", SDL_GetError());
         return 1;
     }
