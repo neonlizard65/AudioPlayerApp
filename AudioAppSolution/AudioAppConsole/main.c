@@ -13,6 +13,25 @@
 #define HiRes1 96000
 #define HiRes2 192000
 
+#define TrackMP3 "./assets/Stray Kids - CEREMONY.mp3"
+#define TrackFLAC "./assets/04. The Cranberries - Zombie.flac"
+
+//Глобальная переменная для текущей песни
+Mix_Music* track;
+
+//Function to test playback of MP3, FLAC
+void TestPlayback(const char *trackName) {
+    if (!Mix_PlayingMusic()) {
+        //If music isn't playing
+        track = Mix_LoadMUS(trackName);
+        if (!track) {
+            printf("Track %s could not be loaded!\nSDL_Error: %s\n", trackName, SDL_GetError());
+            return 1;
+        }
+        Mix_PlayMusic(track, 0);
+    }
+}
+
 int main(){
 
     //Checks if SDL initialized
@@ -52,10 +71,38 @@ int main(){
         printf("Renderer could not be created!\n SDL_Error: %s\n", SDL_GetError());
     }
 
-    bool quit = false;
+    bool quit = false; //Flag for quitting
 
+    Mix_Volume(-1, 30); //30 volume for all channels
+
+    //Write code inside of this loop
     while (!quit) {
+        SDL_Event e;
 
+        // Wait indefinitely for the next available event
+        SDL_WaitEvent(&e);
+
+        // User requests quit
+        if (e.type == SDL_QUIT)
+        {
+            quit = true;
+        }
+        //If user presses a key
+        else if (e.type == SDL_KEYDOWN)
+        {
+            switch (e.key.keysym.sym) {
+            //If space pressed
+            case SDLK_SPACE:
+                if (Mix_PausedMusic() == 1)
+                    Mix_ResumeMusic();
+                else
+                    Mix_PauseMusic();
+                break;
+
+            }
+        }
+
+        TestPlayback(TrackMP3);
     }
 
     // Quit SDL2_mixer
