@@ -73,7 +73,7 @@ int main(){
 
     bool quit = false; //Flag for quitting
 
-    Mix_Volume(-1, 30); //30 volume for all channels
+    Mix_VolumeMusic(30); //30 volume for all channels
 
     //Write code inside of this loop
     while (!quit) {
