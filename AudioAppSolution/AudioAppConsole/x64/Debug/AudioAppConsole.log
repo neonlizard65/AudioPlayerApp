@@ -1,3 +1,3 @@
 ﻿  main.c
-E:\source\AudioPlayerApp\AudioAppSolution\AudioAppConsole\main.c(9,5): warning C4026: функция объявлена со списком формальных параметров
+E:\source\AudioPlayerApp\AudioAppSolution\AudioAppConsole\main.c(16,5): warning C4026: функция объявлена со списком формальных параметров
   AudioAppConsole.vcxproj -> E:\source\AudioPlayerApp\AudioAppSolution\x64\Debug\AudioAppConsole.exe

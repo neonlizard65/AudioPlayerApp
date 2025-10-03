@@ -21,6 +21,12 @@ int main(){
         return 1;
     }
 
+    //Checks audio formats
+    if (Mix_Init(MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG | MIX_INIT_MID | MIX_INIT_OPUS) == 0) {
+        printf("SDL2_mixer does not support one of the formats!\nSDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
+
     //Checks if SDL2-mixer initialized
     if (Mix_OpenAudio(DVD, MIX_DEFAULT_FORMAT, STEREO, 4096) == -1){
         printf("SDL2_mixer could not be initialized!\nSDL_Error: %s", SDL_GetError());
@@ -54,6 +60,9 @@ int main(){
 
     // Quit SDL2_mixer
     Mix_CloseAudio();
+
+    // Deinitialize SDL2 Mix
+    Mix_Quit();
 
     // Quit SDL
     SDL_Quit();
