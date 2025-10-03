@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include "Playlist.h"
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -13,11 +14,16 @@
 #define HiRes1 96000
 #define HiRes2 192000
 
-#define TrackMP3 "./assets/Stray Kids - CEREMONY.mp3"
-#define TrackFLAC "./assets/04. The Cranberries - Zombie.flac"
+//#define TrackMP3 "./assets/Stray Kids - CEREMONY.mp3"
+//#define TrackFLAC "./assets/04. The Cranberries - Zombie.flac"
+#define TrackPlaylist1 "./assets/Stray Kids - CEREMONY.mp3"
+#define TrackPlaylist2 "./assets/Taylor Swift - Blank Space.mp3"
+#define TrackPlaylist3 "./assets/Ariana Grande - 7 rings.mp3"
 
-//Глобальная переменная для текущей песни
+//Global variable for current song
 Mix_Music* track;
+//Global variable for playlist
+Playlist* playlist = NULL;
 
 //Function to test playback of MP3, FLAC
 void TestPlayback(const char *trackName) {
@@ -26,11 +32,31 @@ void TestPlayback(const char *trackName) {
         track = Mix_LoadMUS(trackName);
         if (!track) {
             printf("Track %s could not be loaded!\nSDL_Error: %s\n", trackName, SDL_GetError());
-            return 1;
+            return;
         }
         Mix_PlayMusic(track, 0);
     }
 }
+
+//Callback for automatically starting the next song
+void nextPlaylistSongCallback() {
+    nextPlaylistSong(playlist);
+}
+
+//Function to test Playlists
+void TestPlaylist() {
+    //If playlist isn't created yet
+    if (!playlist) {
+        //Create and start playing the playlist
+        char* tracks[] = { TrackPlaylist1 , TrackPlaylist2, TrackPlaylist3 };
+        playlist = createPlaylist(tracks, 3);
+        startPlaylist(playlist);
+    }
+    //If a song finishes playing, a callback is called to automatically start the next song
+    Mix_HookMusicFinished((Mix_MusicFinishedCallback)nextPlaylistSongCallback);
+}
+
+
 
 int main(){
 
@@ -73,7 +99,7 @@ int main(){
 
     bool quit = false; //Flag for quitting
 
-    Mix_VolumeMusic(30); //30 volume for all channels
+    Mix_VolumeMusic(30); //30 volume for music
 
     //Write code inside of this loop
     while (!quit) {
@@ -90,19 +116,27 @@ int main(){
         //If user presses a key
         else if (e.type == SDL_KEYDOWN)
         {
+            //Checks what key has been pressed
             switch (e.key.keysym.sym) {
-            //If space pressed
-            case SDLK_SPACE:
-                if (Mix_PausedMusic() == 1)
-                    Mix_ResumeMusic();
-                else
-                    Mix_PauseMusic();
-                break;
+                //If space pressed
+                case SDLK_SPACE:
+                    if (Mix_PausedMusic() == 1)
+                        Mix_ResumeMusic();
+                    else
+                        Mix_PauseMusic();
+                    break;
 
+                //Right arrow
+                case SDLK_RIGHT:
+                    nextPlaylistSong(playlist);
+                    break;
             }
         }
+        TestPlaylist(); //Test playlist functionality (can comment out)      
+    }
 
-        TestPlayback(TrackMP3);
+    if (playlist) {
+        clearPlaylist(playlist); //Free playlist memory if allocated
     }
 
     // Quit SDL2_mixer
