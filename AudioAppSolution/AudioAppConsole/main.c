@@ -20,12 +20,14 @@
 #define TrackPlaylist2 "./assets/Taylor Swift - Blank Space.mp3"
 #define TrackPlaylist3 "./assets/Ariana Grande - 7 rings.mp3"
 
-//Global variable for current song
-Mix_Music* track;
-//Global variable for playlist
+//Global variable for current song (for TestPlayback)
+Mix_Music* track = NULL;
+//Global variable for playlist (for TestPlaylist)
 Playlist* playlist = NULL;
 
 //Function to test playback of MP3, FLAC
+//When finished playing, Mix_FreeMusic must be called at some point
+//Note: calling FreeMusic can cause memory access violation (it can be solved by setting the track pointer to NULL after freeing (see Playlist.c)) 
 void TestPlayback(const char *trackName) {
     if (!Mix_PlayingMusic()) {
         //If music isn't playing
@@ -40,7 +42,9 @@ void TestPlayback(const char *trackName) {
 
 //Callback for automatically starting the next song
 void nextPlaylistSongCallback() {
-    nextPlaylistSong(playlist);
+    if (playlist->isPlaying) {
+        nextPlaylistSong(playlist);
+    }
 }
 
 //Function to test Playlists
@@ -52,8 +56,10 @@ void TestPlaylist() {
         playlist = createPlaylist(tracks, 3);
         startPlaylist(playlist);
     }
-    //If a song finishes playing, a callback is called to automatically start the next song
+    //If a song finishes playing (but the playlist continues), a callback is called to automatically start the next song
+    //TODO: check if this call takes up stack memory
     Mix_HookMusicFinished((Mix_MusicFinishedCallback)nextPlaylistSongCallback);
+
 }
 
 
@@ -120,15 +126,27 @@ int main(){
             switch (e.key.keysym.sym) {
                 //If space pressed
                 case SDLK_SPACE:
-                    if (Mix_PausedMusic() == 1)
+                    if (Mix_PausedMusic() == 1) {
                         Mix_ResumeMusic();
-                    else
+                    }
+                    else {
                         Mix_PauseMusic();
+                    }
+                    //If playlist music was halted, then space should allow playlist to start again
+                    if (!playlist->isPlaying) {
+                        playlist->isPlaying = true;
+                        startPlaylist(playlist); //Maybe add index to function call to start playlist from any chosen index?
+                    }
                     break;
 
                 //Right arrow
                 case SDLK_RIGHT:
                     nextPlaylistSong(playlist);
+                    break;
+
+                //Left arrow
+                case SDLK_LEFT:
+                    prevPlaylistSong(playlist);
                     break;
             }
         }
