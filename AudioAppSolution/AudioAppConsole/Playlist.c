@@ -115,5 +115,7 @@ void prevPlaylistSong(Playlist* playlist) {
 
 //Frees allocated memory by the playlist
 void clearPlaylist(Playlist* playlist) {
+    Mix_FreeMusic(playlist->currentTrack);
+    playlist->currentTrack = NULL;
     free(playlist);
 }
