@@ -19,6 +19,14 @@ static void stopMusic(Playlist *playlist) {
     }
 }
 
+//Helper function to play Music from a playlist
+//static to not be available by other files
+static void playMusic(Playlist* playlist) {
+    playlist->currentTrack = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
+    Mix_PlayMusic(playlist->currentTrack, 0);
+    playlist->isPlaying = true;
+}
+
 
 //Creates a playlist from audio paths passed into the function in an array
 //Requires track count to be passed to work with tracks array
@@ -56,31 +64,29 @@ Playlist* createPlaylist(char **tracks, int trackCount) {
     return playlist;
 }
 
-
 //Start playing playlist
 void startPlaylist(Playlist *playlist) {
     //Free up any music that may be currently playing
     stopMusic(playlist);
     playlist->currentTrackIndex = 0; //First track
-    playlist->currentTrack = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
-    Mix_PlayMusic(playlist->currentTrack, 0);
-    playlist->isPlaying = true;
+    playMusic(playlist);
 }
 
 //Start playing next playlist song
 void nextPlaylistSong(Playlist* playlist) {
     //If there are songs remaining in the playlist
-    if (playlist->currentTrackIndex < playlist->trackCount)
+    stopMusic(playlist);
+    if (playlist->currentTrackIndex < playlist->trackCount - 1)
     { 
-        stopMusic(playlist);
         playlist->currentTrackIndex++; //Next song
-        playlist->currentTrack = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
-        Mix_PlayMusic(playlist->currentTrack, 0);
-        playlist->isPlaying = true;
+        playMusic(playlist);
     }
     //Else we stop playing music
     else {
-        stopMusic(playlist);
+        if (playlist->isRepeat) {
+            playlist->currentTrackIndex = 0;
+            playMusic(playlist);
+        }
     }
 }
 
@@ -91,9 +97,7 @@ void prevPlaylistSong(Playlist* playlist) {
     {
         stopMusic(playlist);
         playlist->currentTrackIndex--; //Previous song
-        playlist->currentTrack = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
-        Mix_PlayMusic(playlist->currentTrack, 0);
-        playlist->isPlaying = true;
+        playMusic(playlist);
     }
     //Else we stop playing music
     else {
@@ -104,7 +108,14 @@ void prevPlaylistSong(Playlist* playlist) {
 //TODO:
 //Shuffle
 
-//Repeat
+//Repeat playlist
+void repeatPlaylist(Playlist* playlist) {
+    playlist->isRepeat = true;
+}
+//Stop repeating playlist
+void norepeatPlaylist(Playlist* playlist) {
+    playlist->isRepeat = false;
+}
 
 //Frees allocated memory by the playlist
 void clearPlaylist(Playlist* playlist) {

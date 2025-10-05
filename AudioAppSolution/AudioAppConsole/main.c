@@ -55,6 +55,7 @@ void TestPlaylist() {
         char* tracks[] = { TrackPlaylist1 , TrackPlaylist2, TrackPlaylist3 };
         playlist = createPlaylist(tracks, 3);
         startPlaylist(playlist);
+        repeatPlaylist(playlist);
     }
     //If a song finishes playing (but the playlist continues), a callback is called to automatically start the next song
     //TODO: check if this call takes up stack memory

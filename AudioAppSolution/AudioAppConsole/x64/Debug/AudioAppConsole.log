@@ -1,5 +1,2 @@
 ﻿  Playlist.c
-  main.c
-  Создание кода...
-E:\source\AudioPlayerApp\AudioAppSolution\AudioAppConsole\main.c(67,5): warning C4026: функция объявлена со списком формальных параметров
   AudioAppConsole.vcxproj -> E:\source\AudioPlayerApp\AudioAppSolution\x64\Debug\AudioAppConsole.exe

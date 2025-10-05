@@ -36,5 +36,8 @@ void startPlaylist(Playlist* playlist);
 void nextPlaylistSong(Playlist* playlist);
 //Play the previous track
 void prevPlaylistSong(Playlist* playlist);
-
+//Repeat the playlist
+void repeatPlaylist(Playlist* playlist);
+//Stop repeating playlist
+void norepeatPlaylist(Playlist* playlist);
 #endif /*PLAYLIST.H*/
