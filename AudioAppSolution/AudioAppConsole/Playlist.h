@@ -1,3 +1,6 @@
+#ifndef PLAYLIST_H //Include guard 
+#define PLAYLIST_H
+
 #include <SDL.h>
 #include <SDL_mixer.h>
 
@@ -33,3 +36,5 @@ void startPlaylist(Playlist* playlist);
 void nextPlaylistSong(Playlist* playlist);
 //Play the previous track
 void prevPlaylistSong(Playlist* playlist);
+
+#endif /*PLAYLIST.H*/
