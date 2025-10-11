@@ -13,9 +13,9 @@
 static void stopMusic(Playlist *playlist) {
     playlist->isPlaying = false;
     Mix_HaltMusic();
-    if (playlist->currentTrack) {
-        Mix_FreeMusic(playlist->currentTrack);
-        playlist->currentTrack = NULL;
+    if (playlist->currentTrack->music) {
+        Mix_FreeMusic(playlist->currentTrack->music);
+        playlist->currentTrack->music = NULL;
     }
 }
 
@@ -23,8 +23,8 @@ static void stopMusic(Playlist *playlist) {
 //static to not be available by other files
 static void playMusic(Playlist* playlist) {
     playlist->startTime = SDL_GetTicks64();
-    playlist->currentTrack = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
-    Mix_PlayMusic(playlist->currentTrack, 0);
+    playlist->currentTrack->music = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
+    Mix_PlayMusic(playlist->currentTrack->music, 0);
     playlist->isPlaying = true;
 }
 
@@ -46,18 +46,29 @@ Playlist* createPlaylist(char **tracks, int trackCount) {
             return NULL;
         }
     }
+
     //Playlist memory allocation
     Playlist* playlist = (Playlist*)malloc(sizeof(Playlist));
     if (!playlist) {
         printf("Error while allocating memory for playlist");
         return NULL;
     }
-    playlist->currentTrack = NULL;
+
+    //Song memory allocation
+    Song *song = (Song *)malloc(sizeof(Song));
+    if (!song) {
+        printf("Error while allocating memory for a song");
+        return NULL;
+    }
+    //Initialization
+    playlist->currentTrack = song;
+    playlist->currentTrack->music = NULL;
     playlist->currentTrackIndex = -1;
     playlist->trackCount = trackCount;
     playlist->isRepeat = false;
     playlist->isShuffled = false;
-    playlist->volume = 30;
+    playlist->volume = 50;
+    Mix_VolumeMusic(playlist->volume);
     //Write into the tracks array
     for (size_t i = 0; i < trackCount; i++)
     {
@@ -67,10 +78,13 @@ Playlist* createPlaylist(char **tracks, int trackCount) {
 }
 
 //Start playing playlist
-void startPlaylist(Playlist *playlist) {
+void startPlaylist(Playlist *playlist, bool loop) {
     //Free up any music that may be currently playing
     stopMusic(playlist);
     playlist->currentTrackIndex = 0; //First track
+    if (loop) {
+        repeatPlaylist(playlist);
+    }
     playMusic(playlist);
 }
 
@@ -120,14 +134,6 @@ void norepeatPlaylist(Playlist* playlist) {
     playlist->isRepeat = false;
 }
 
-//Frees allocated memory by the playlist
-void clearPlaylist(Playlist* playlist) {
-    Mix_FreeMusic(playlist->currentTrack);
-    playlist->currentTrack = NULL;
-    free(playlist);
-}
-
-
 //Plays current song from the beginning or returns to the previous song (simillar to the function on Spotify)
 void playSongFromBeginningOrPrev(Playlist* playlist) {
     if (playlist->isPlaying) {
@@ -139,7 +145,7 @@ void playSongFromBeginningOrPrev(Playlist* playlist) {
         //If the delta is more than 2 seconds
         if (delta > 2000) {
             stopMusic(playlist);
-            Mix_PlayMusic(playlist->currentTrack, -1);//Restarts the current song
+            Mix_PlayMusic(playlist->currentTrack->music, -1);//Restarts the current song
             playMusic(playlist);
 
         }
@@ -152,15 +158,23 @@ void playSongFromBeginningOrPrev(Playlist* playlist) {
 }
 
 void increasePlaylistVolume(Playlist* playlist) {
-    if (playlist->volume!=NULL || playlist->volume <= 128) {
+    if (playlist->volume != NULL && playlist->volume < 128) {
         playlist->volume++;
         Mix_VolumeMusic(playlist->volume);
     }
 }
 
 void decreasePlaylistVolume(Playlist* playlist) {
-    if (playlist->volume != NULL || playlist->volume > 0) {
+    if (playlist->volume != NULL && playlist->volume > 0) {
         playlist->volume--;
         Mix_VolumeMusic(playlist->volume);
     }
+}
+
+//Frees allocated memory by the playlist
+void clearPlaylist(Playlist* playlist) {
+    Mix_FreeMusic(playlist->currentTrack->music);
+    free(playlist->currentTrack);
+    playlist->currentTrack->music = NULL;
+    free(playlist);
 }

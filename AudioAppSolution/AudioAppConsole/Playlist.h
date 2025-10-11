@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include "Song.h"
 
 #define MAX_TRACKS 100 //Max number of tracks
 #define MAX_PATH_LENGTH 256 //Max number of symbols in track path
@@ -19,7 +20,7 @@
 typedef struct Playlist {
     char tracks[MAX_TRACKS][MAX_PATH_LENGTH];
     int currentTrackIndex;
-    Mix_Music* currentTrack;
+    Song* currentTrack;
     int trackCount;
     bool isPlaying;
     bool isRepeat;

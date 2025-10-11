@@ -128,11 +128,14 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="Playlist.c" />
-    <ClCompile Include="Songs.c" />
+    <ClCompile Include="Song.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Playlist.h" />
-    <ClInclude Include="Songs.h" />
+    <ClInclude Include="Song.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.gitignore" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

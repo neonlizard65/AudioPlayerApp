@@ -4,7 +4,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 #include "Playlist.h"
-#include "Songs.h"
+#include "Song.h"
 
 
 #define SCREEN_WIDTH 1600
@@ -14,19 +14,16 @@
 #define STEREO 2
 #define CD 44100
 #define DVD 48000
-#define HiRes1 96000
-#define HiRes2 192000
+#define HIRES2 96000
+#define HIRES2 192000
 
-
-//#define TrackMP3 "./assets/Stray Kids - CEREMONY.mp3"
-//#define TrackFLAC "./assets/04. The Cranberries - Zombie.flac"
-#define TrackPlaylist1 "./assets/Stray Kids - CEREMONY.mp3"
-#define TrackPlaylist2 "./assets/Taylor Swift - Blank Space.mp3"
-#define TrackPlaylist3 "./assets/Ariana Grande - 7 rings.mp3"
-#define TrackPlaylist4 "./assets/Stray Kids-Booster.mp3"
-#define TrackPlaylist5 "./assets/Stray Kids - MEGAVERSE.mp3"
-#define TrackPlaylist6 "./assets/Taylor Swift-Back To December (Taylor s Version).mp3"
-#define TrackPlaylist7 "./assets/04. The Cranberries - Zombie.flac"
+#define TRACKPLAYLIST1 "./assets/Stray Kids - CEREMONY.mp3"
+#define TRACKPLAYLIST2 "./assets/Taylor Swift - Blank Space.mp3"
+#define TRACKPLAYLIST3 "./assets/Ariana Grande - 7 rings.mp3"
+#define TRACKPLAYLIST4 "./assets/Stray Kids-Booster.mp3"
+#define TRACKPLAYLIST5 "./assets/Stray Kids - MEGAVERSE.mp3"
+#define TRACKPLAYLIST6 "./assets/Taylor Swift-Back To December (Taylor s Version).mp3"
+#define TRACKPLAYLIST7 "./assets/04. The Cranberries - Zombie.flac"
 
 
 //Global variable for current song (for TestPlayback)
@@ -61,10 +58,9 @@ void TestPlaylist() {
     //If playlist isn't created yet
     if (!playlist) {
         //Create and start playing the playlist
-        char* tracks[] = { TrackPlaylist1 , TrackPlaylist2, TrackPlaylist3, TrackPlaylist4, TrackPlaylist5, TrackPlaylist6, TrackPlaylist7 };
+        char* tracks[] = { TRACKPLAYLIST1 , TRACKPLAYLIST2, TRACKPLAYLIST3, TRACKPLAYLIST4, TRACKPLAYLIST5, TRACKPLAYLIST6, TRACKPLAYLIST7 };
         playlist = createPlaylist(tracks, 7);
         startPlaylist(playlist);
-        repeatPlaylist(playlist);
     }
     //If a song finishes playing (but the playlist continues), a callback is called to automatically start the next song
     //TODO: check if this call takes up stack memory
@@ -72,26 +68,32 @@ void TestPlaylist() {
 
 }
 
-
-
 int main(){
 
     //Checks if SDL initialized
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not be initialized!\nSDL_Error: %s\n", SDL_GetError());
-        return 1;
+        exit(1);
     }
 
     //Checks audio formats
     if (Mix_Init(MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG | MIX_INIT_MID | MIX_INIT_OPUS) == 0) {
         printf("SDL2_mixer does not support one of the formats!\nSDL_Error: %s\n", SDL_GetError());
-        return 1;
+        exit(1);
+
     }
 
     //Checks if SDL2-mixer initialized
     if (Mix_OpenAudio(DVD, MIX_DEFAULT_FORMAT, STEREO, 4096) == -1){
-        printf("SDL2_mixer could not be initialized!\nSDL_Error: %s", SDL_GetError());
-        return 1;
+        printf("SDL2_mixer could not be initialized!\nSDL_Error: %s\n", SDL_GetError());
+        exit(1);
+
+    }
+
+    //Initialize TTF
+    if (TTF_Init() == -1) {
+        printf("TTF_Init could not be initialized!\n TTF_Error: %s\n", TTF_GetError());
+        exit(2);
     }
 
     // Create window
@@ -114,8 +116,6 @@ int main(){
     }
 
     bool quit = false; //Flag for quitting
-
-    Mix_VolumeMusic(30); //30 volume for music
 
     //Write code inside of this loop
     while (!quit) {
@@ -148,12 +148,10 @@ int main(){
                         startPlaylist(playlist); //Maybe add index to function call to start playlist from any chosen index?
                     }
                     break;
-
                 //Right arrow
                 case SDLK_RIGHT:
                     nextPlaylistSong(playlist);
                     break;
-                    
                 //Left arrow
                 case SDLK_LEFT:
                     playSongFromBeginningOrPrev(playlist);
@@ -162,12 +160,10 @@ int main(){
                 case SDLK_UP:
                     increasePlaylistVolume(playlist);
                     break;
-
                 //Down arrow
                 case SDLK_DOWN:
                     decreasePlaylistVolume(playlist);
                     break;
-
             }
         }
         TestPlaylist(); //Test playlist functionality (can comment out)      
@@ -177,8 +173,12 @@ int main(){
         clearPlaylist(playlist); //Free playlist memory if allocated
     }
 
+
     // Quit SDL2_mixer
     Mix_CloseAudio();
+
+    // Deinitialize TTF
+    TTF_Quit();
 
     // Deinitialize SDL2 Mix
     Mix_Quit();
