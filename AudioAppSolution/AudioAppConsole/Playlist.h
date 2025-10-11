@@ -35,8 +35,8 @@ typedef struct Playlist {
 Playlist* createPlaylist(char** tracks, int trackCount);
 //Frees allocated memory by the playlist
 void clearPlaylist(Playlist* playlist);
-//Start playing playlist
-void startPlaylist(Playlist* playlist);
+//Start playing playlist. Indicate if should be looped or not
+void startPlaylist(Playlist* playlist, bool loop);
 //Start playing next playlist song
 void nextPlaylistSong(Playlist* playlist);
 //Play the previous track
