@@ -1,2 +1,8 @@
-﻿  Playlist.c
-  AudioAppConsole.vcxproj -> E:\source\AudioPlayerApp\AudioAppSolution\x64\Debug\AudioAppConsole.exe
+﻿  main.c
+C:\Users\julia\source\repos\AudioPlayerApp\AudioAppSolution\AudioAppConsole\main.c(129,5): warning C4026: function declared with formal parameter list
+main.obj : error LNK2019: unresolved external symbol TTF_Init referenced in function initialize_ttf
+main.obj : error LNK2019: unresolved external symbol TTF_OpenFont referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol TTF_RenderText_Blended referenced in function create_text_texture
+main.obj : error LNK2019: unresolved external symbol TTF_CloseFont referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol TTF_Quit referenced in function SDL_main
+C:\Users\julia\source\repos\AudioPlayerApp\AudioAppSolution\x64\Debug\AudioAppConsole.exe : fatal error LNK1120: 5 unresolved externals

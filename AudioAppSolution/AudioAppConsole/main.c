@@ -2,7 +2,10 @@
 #include <stdbool.h>
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include "Playlist.h"
+#include "Songs.h"
+
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -14,11 +17,17 @@
 #define HiRes1 96000
 #define HiRes2 192000
 
+
 //#define TrackMP3 "./assets/Stray Kids - CEREMONY.mp3"
 //#define TrackFLAC "./assets/04. The Cranberries - Zombie.flac"
 #define TrackPlaylist1 "./assets/Stray Kids - CEREMONY.mp3"
 #define TrackPlaylist2 "./assets/Taylor Swift - Blank Space.mp3"
 #define TrackPlaylist3 "./assets/Ariana Grande - 7 rings.mp3"
+#define TrackPlaylist4 "./assets/Stray Kids-Booster.mp3"
+#define TrackPlaylist5 "./assets/Stray Kids - MEGAVERSE.mp3"
+#define TrackPlaylist6 "./assets/Taylor Swift-Back To December (Taylor s Version).mp3"
+#define TrackPlaylist7 "./assets/04. The Cranberries - Zombie.flac"
+
 
 //Global variable for current song (for TestPlayback)
 Mix_Music* track = NULL;
@@ -52,8 +61,8 @@ void TestPlaylist() {
     //If playlist isn't created yet
     if (!playlist) {
         //Create and start playing the playlist
-        char* tracks[] = { TrackPlaylist1 , TrackPlaylist2, TrackPlaylist3 };
-        playlist = createPlaylist(tracks, 3);
+        char* tracks[] = { TrackPlaylist1 , TrackPlaylist2, TrackPlaylist3, TrackPlaylist4, TrackPlaylist5, TrackPlaylist6, TrackPlaylist7 };
+        playlist = createPlaylist(tracks, 7);
         startPlaylist(playlist);
         repeatPlaylist(playlist);
     }
@@ -144,11 +153,21 @@ int main(){
                 case SDLK_RIGHT:
                     nextPlaylistSong(playlist);
                     break;
-
+                    
                 //Left arrow
                 case SDLK_LEFT:
-                    prevPlaylistSong(playlist);
+                    playSongFromBeginningOrPrev(playlist);
                     break;
+                //Up arrow
+                case SDLK_UP:
+                    increasePlaylistVolume(playlist);
+                    break;
+
+                //Down arrow
+                case SDLK_DOWN:
+                    decreasePlaylistVolume(playlist);
+                    break;
+
             }
         }
         TestPlaylist(); //Test playlist functionality (can comment out)      

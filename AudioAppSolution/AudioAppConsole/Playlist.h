@@ -6,6 +6,7 @@
 
 #define MAX_TRACKS 100 //Max number of tracks
 #define MAX_PATH_LENGTH 256 //Max number of symbols in track path
+#define DOUBLE_PRESS_TIME 500 // In milliseconds, for playing songs from beginning
 
 //tracks - array of track paths
 //currentTrackIndex - index of current track path in tracks array (-1 if playlist isn't started)
@@ -13,7 +14,8 @@
 //isPlaying - is the playlist playing a song
 //isRepeat - is the playlist repeating on end
 //isShuffled - is the playlist randomly shuffled
-
+//startTime - counts the time since the song started
+//volume - defines the volume of the playlist (0 - 128)
 typedef struct Playlist {
     char tracks[MAX_TRACKS][MAX_PATH_LENGTH];
     int currentTrackIndex;
@@ -22,6 +24,8 @@ typedef struct Playlist {
     bool isPlaying;
     bool isRepeat;
     bool isShuffled;
+    Uint32 startTime;
+    int volume;
 }Playlist;
 
 //Creates a playlist from audio paths passed into the function in an array
@@ -40,4 +44,10 @@ void prevPlaylistSong(Playlist* playlist);
 void repeatPlaylist(Playlist* playlist);
 //Stop repeating playlist
 void norepeatPlaylist(Playlist* playlist);
+//Play song again
+void playSongFromBeginningOrPrev(Playlist* playlist);
+//Increases the song's volume
+void increasePlaylistVolume(Playlist* playlist);
+//Decreases the song's volume
+void decreasePlaylistVolume(Playlist* playlist);
 #endif /*PLAYLIST.H*/

@@ -128,9 +128,11 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="Playlist.c" />
+    <ClCompile Include="Songs.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Playlist.h" />
+    <ClInclude Include="Songs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

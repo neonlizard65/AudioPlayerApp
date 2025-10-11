@@ -22,6 +22,7 @@ static void stopMusic(Playlist *playlist) {
 //Helper function to play Music from a playlist
 //static to not be available by other files
 static void playMusic(Playlist* playlist) {
+    playlist->startTime = SDL_GetTicks64();
     playlist->currentTrack = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
     Mix_PlayMusic(playlist->currentTrack, 0);
     playlist->isPlaying = true;
@@ -56,6 +57,7 @@ Playlist* createPlaylist(char **tracks, int trackCount) {
     playlist->trackCount = trackCount;
     playlist->isRepeat = false;
     playlist->isShuffled = false;
+    playlist->volume = 30;
     //Write into the tracks array
     for (size_t i = 0; i < trackCount; i++)
     {
@@ -105,6 +107,7 @@ void prevPlaylistSong(Playlist* playlist) {
     }
 }
 
+
 //TODO:
 //Shuffle
 
@@ -124,3 +127,40 @@ void clearPlaylist(Playlist* playlist) {
     free(playlist);
 }
 
+
+//Plays current song from the beginning or returns to the previous song (simillar to the function on Spotify)
+void playSongFromBeginningOrPrev(Playlist* playlist) {
+    if (playlist->isPlaying) {
+        //Current time is the time we get when the function is called
+        Uint32 current_time = SDL_GetTicks64();
+        //Delta is the difference between the time when we clicked the 
+        //left arrow button and the time when the song begun
+        Uint32 delta = current_time - playlist->startTime;
+        //If the delta is more than 2 seconds
+        if (delta > 2000) {
+            stopMusic(playlist);
+            Mix_PlayMusic(playlist->currentTrack, -1);//Restarts the current song
+            playMusic(playlist);
+
+        }
+        //If the delta is less than 2 seconds
+        else {
+            prevPlaylistSong(playlist);//Plays the previous song
+        }
+    }
+
+}
+
+void increasePlaylistVolume(Playlist* playlist) {
+    if (playlist->volume!=NULL || playlist->volume <= 128) {
+        playlist->volume++;
+        Mix_VolumeMusic(playlist->volume);
+    }
+}
+
+void decreasePlaylistVolume(Playlist* playlist) {
+    if (playlist->volume != NULL || playlist->volume > 0) {
+        playlist->volume--;
+        Mix_VolumeMusic(playlist->volume);
+    }
+}
