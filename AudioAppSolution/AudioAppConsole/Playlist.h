@@ -1,8 +1,8 @@
 #ifndef PLAYLIST_H //Include guard 
 #define PLAYLIST_H
 
-#include <SDL.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #define MAX_TRACKS 100 //Max number of tracks
 #define MAX_PATH_LENGTH 256 //Max number of symbols in track path

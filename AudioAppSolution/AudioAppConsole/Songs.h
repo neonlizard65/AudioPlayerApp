@@ -1,7 +1,7 @@
 #ifndef SONGS_H //Include guard 
 #define SONGS_H
-#include <SDL.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include "Playlist.h"
 
 

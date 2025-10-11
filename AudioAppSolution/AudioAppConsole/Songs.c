@@ -1,14 +1,14 @@
 #include <stdbool.h>
-#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL.h>
-#include <SDL_mixer.h>
 #include <string.h>
+#include <time.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
 #include "Playlist.h"
 #include "Songs.h"
 #include <Windows.h>
-#include <SDL_ttf.h>
 
 //"CEREMONY";
 void createSongs(Songs* song) {
