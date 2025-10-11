@@ -1,10 +1,9 @@
 .vs/
 .git/
 
-x64/
-
-AudioAppConsole/.vs/
-AudioAppConsole/x64/
+AudioAppSolution/AudioAppConsole/.vs/
+AudioAppSolution/AudioAppConsole/x64/
+AudioAppSolution/x64/
 
 #Visual Studio files
 *.[Oo]bj
