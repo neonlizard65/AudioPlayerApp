@@ -10,7 +10,10 @@
 #define DOUBLE_PRESS_TIME 500 // In milliseconds, for playing songs from beginning
 
 //tracks - array of track paths
+//trackIndeces - array if track indeces for shuffling
 //currentTrackIndex - index of current track path in tracks array (-1 if playlist isn't started)
+//currentTrackPosition - position of current track in playlist. Is different from index, 
+//                       because index changes if playlist is shuffled (-1 if playlist isn't started)
 //currentTrack - track object (for memory freeing)
 //isPlaying - is the playlist playing a song
 //isRepeat - is the playlist repeating on end
@@ -19,13 +22,15 @@
 //volume - defines the volume of the playlist (0 - 128)
 typedef struct Playlist {
     char tracks[MAX_TRACKS][MAX_PATH_LENGTH];
+    int trackIndeces[MAX_TRACKS]; 
     int currentTrackIndex;
+    int currentTrackPosition;
     Song* currentTrack;
     int trackCount;
     bool isPlaying;
     bool isRepeat;
     bool isShuffled;
-    Uint32 startTime;
+    Uint64 startTime;
     int volume;
 }Playlist;
 
@@ -36,7 +41,7 @@ Playlist* createPlaylist(char** tracks, int trackCount);
 //Frees allocated memory by the playlist
 void clearPlaylist(Playlist* playlist);
 //Start playing playlist. Indicate if should be looped or not
-void startPlaylist(Playlist* playlist, bool loop);
+void startPlaylist(Playlist* playlist, bool loop, bool shuffle);
 //Start playing next playlist song
 void nextPlaylistSong(Playlist* playlist);
 //Play the previous track
@@ -45,6 +50,10 @@ void prevPlaylistSong(Playlist* playlist);
 void repeatPlaylist(Playlist* playlist);
 //Stop repeating playlist
 void norepeatPlaylist(Playlist* playlist);
+//Shuffle playlist
+void shufflePlaylist(Playlist* playlist);
+//Unshuffle playlist
+void unshufflePlaylist(Playlist* playlist);
 //Play song again
 void playSongFromBeginningOrPrev(Playlist* playlist);
 //Increases the song's volume

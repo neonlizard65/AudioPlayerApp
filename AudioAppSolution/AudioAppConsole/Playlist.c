@@ -26,6 +26,15 @@ static void playMusic(Playlist* playlist) {
     playlist->currentTrack->music = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
     Mix_PlayMusic(playlist->currentTrack->music, 0);
     playlist->isPlaying = true;
+    strcpy_s(playlist->currentTrack->title, 100, playlist->tracks[playlist->currentTrackIndex]);
+    printf("Position: %d\tIndex: %d\tSong: %s\n", playlist->currentTrackPosition, playlist->currentTrackIndex, playlist->currentTrack->title);
+}
+
+//Swap playlist indeces
+static void swapIndeces(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 
@@ -60,15 +69,22 @@ Playlist* createPlaylist(char **tracks, int trackCount) {
         printf("Error while allocating memory for a song");
         return NULL;
     }
+
     //Initialization
+    for(int i = 0; i < MAX_TRACKS; i++){
+        playlist->trackIndeces[i] = i;
+    }
+
     playlist->currentTrack = song;
     playlist->currentTrack->music = NULL;
     playlist->currentTrackIndex = -1;
+    playlist->currentTrackPosition = -1;
     playlist->trackCount = trackCount;
     playlist->isRepeat = false;
     playlist->isShuffled = false;
     playlist->volume = 50;
     Mix_VolumeMusic(playlist->volume);
+
     //Write into the tracks array
     for (size_t i = 0; i < trackCount; i++)
     {
@@ -78,29 +94,45 @@ Playlist* createPlaylist(char **tracks, int trackCount) {
 }
 
 //Start playing playlist
-void startPlaylist(Playlist *playlist, bool loop) {
+void startPlaylist(Playlist *playlist, bool loop, bool shuffle) {
     //Free up any music that may be currently playing
     stopMusic(playlist);
-    playlist->currentTrackIndex = 0; //First track
+    //Check if should shuffle/unshuffle
+    if (shuffle) {
+        shufflePlaylist(playlist);
+    }
+    else {
+        unshufflePlaylist(playlist);
+    }
+    playlist->currentTrackPosition = 0; //First track
+    playlist->currentTrackIndex = playlist->trackIndeces[playlist->currentTrackPosition]; //First track index
+    //Check if should repeat
     if (loop) {
         repeatPlaylist(playlist);
+    }
+    else {
+        norepeatPlaylist(playlist);
     }
     playMusic(playlist);
 }
 
 //Start playing next playlist song
 void nextPlaylistSong(Playlist* playlist) {
+    stopMusic(playlist); //Stop current song
     //If there are songs remaining in the playlist
-    stopMusic(playlist);
-    if (playlist->currentTrackIndex < playlist->trackCount - 1)
+    if (playlist->currentTrackPosition < playlist->trackCount - 1)
     { 
-        playlist->currentTrackIndex++; //Next song
+        //Next song
+        playlist->currentTrackPosition++; 
+        playlist->currentTrackIndex = playlist->trackIndeces[playlist->currentTrackPosition];
         playMusic(playlist);
     }
     //Else we stop playing music
     else {
+        //If playlist is on repeat, then we go back to the beginning
         if (playlist->isRepeat) {
-            playlist->currentTrackIndex = 0;
+            playlist->currentTrackPosition = 0;
+            playlist->currentTrackIndex = playlist->trackIndeces[playlist->currentTrackPosition];
             playMusic(playlist);
         }
     }
@@ -109,10 +141,11 @@ void nextPlaylistSong(Playlist* playlist) {
 //Play the previous track
 void prevPlaylistSong(Playlist* playlist) {
     //If there is a song before the current one
-    if (playlist->currentTrackIndex >= 0)
+    if (playlist->currentTrackPosition > 0)
     {
         stopMusic(playlist);
-        playlist->currentTrackIndex--; //Previous song
+        playlist->currentTrackPosition--; //Previous song
+        playlist->currentTrackIndex = playlist->trackIndeces[playlist->currentTrackPosition];
         playMusic(playlist);
     }
     //Else we stop playing music
@@ -121,9 +154,26 @@ void prevPlaylistSong(Playlist* playlist) {
     }
 }
 
-
-//TODO:
 //Shuffle
+void shufflePlaylist(Playlist* playlist) {
+    srand(time((time_t)NULL));
+
+    //Fisher-Yates shuffle O(n)
+    //The idea is that you start from the last element and swap one by one
+    for (size_t i = playlist->trackCount - 1; i > 0; i--) {
+        int j = rand() % (i + 1); //Random index from 0 to i
+        swapIndeces(&playlist->trackIndeces[i], &playlist->trackIndeces[j]);
+    }
+    playlist->isShuffled = true;
+}
+
+//Unshuffle
+void unshufflePlaylist(Playlist* playlist) {
+    for (int i = 0; i < MAX_TRACKS; i++) {
+        playlist->trackIndeces[i] = i;
+    }
+    playlist->isShuffled = false;
+}
 
 //Repeat playlist
 void repeatPlaylist(Playlist* playlist) {
@@ -138,10 +188,10 @@ void norepeatPlaylist(Playlist* playlist) {
 void playSongFromBeginningOrPrev(Playlist* playlist) {
     if (playlist->isPlaying) {
         //Current time is the time we get when the function is called
-        Uint32 current_time = SDL_GetTicks64();
+        Uint64 current_time = SDL_GetTicks64();
         //Delta is the difference between the time when we clicked the 
         //left arrow button and the time when the song begun
-        Uint32 delta = current_time - playlist->startTime;
+        Uint64 delta = current_time - playlist->startTime;
         //If the delta is more than 2 seconds
         if (delta > 2000) {
             stopMusic(playlist);
@@ -158,14 +208,14 @@ void playSongFromBeginningOrPrev(Playlist* playlist) {
 }
 
 void increasePlaylistVolume(Playlist* playlist) {
-    if (playlist->volume != NULL && playlist->volume < 128) {
+    if (playlist->volume < 128) {
         playlist->volume++;
         Mix_VolumeMusic(playlist->volume);
     }
 }
 
 void decreasePlaylistVolume(Playlist* playlist) {
-    if (playlist->volume != NULL && playlist->volume > 0) {
+    if (playlist->volume > 0) {
         playlist->volume--;
         Mix_VolumeMusic(playlist->volume);
     }

@@ -14,7 +14,7 @@
 #define STEREO 2
 #define CD 44100
 #define DVD 48000
-#define HIRES2 96000
+#define HIRES1 96000
 #define HIRES2 192000
 
 #define TRACKPLAYLIST1 "./assets/Stray Kids - CEREMONY.mp3"
@@ -60,7 +60,7 @@ void TestPlaylist() {
         //Create and start playing the playlist
         char* tracks[] = { TRACKPLAYLIST1 , TRACKPLAYLIST2, TRACKPLAYLIST3, TRACKPLAYLIST4, TRACKPLAYLIST5, TRACKPLAYLIST6, TRACKPLAYLIST7 };
         playlist = createPlaylist(tracks, 7);
-        startPlaylist(playlist);
+        startPlaylist(playlist, true, true);
     }
     //If a song finishes playing (but the playlist continues), a callback is called to automatically start the next song
     //TODO: check if this call takes up stack memory
@@ -145,7 +145,7 @@ int main(){
                     //If playlist music was halted, then space should allow playlist to start again
                     if (!playlist->isPlaying) {
                         playlist->isPlaying = true;
-                        startPlaylist(playlist); //Maybe add index to function call to start playlist from any chosen index?
+                        startPlaylist(playlist, true, true); //Maybe add index to function call to start playlist from any chosen index?
                     }
                     break;
                 //Right arrow
