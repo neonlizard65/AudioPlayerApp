@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
@@ -31,6 +32,7 @@
 Mix_Music* track = NULL;
 //Global variable for playlist (for TestPlaylist)
 Playlist* playlist = NULL;
+
 
 //Function to test playback of MP3, FLAC
 //When finished playing, Mix_FreeMusic must be called at some point
@@ -118,6 +120,10 @@ int main(){
 
     bool quit = false; //Flag for quitting
 
+    Song* song1 = createSong("CEREMONY", "Stray Kids", "KARMA");
+    printSong(song1);
+    clearSong(song1);
+
     //Write code inside of this loop
     while (!quit) {
         SDL_Event e;
@@ -165,6 +171,13 @@ int main(){
                 case SDLK_DOWN:
                     decreasePlaylistVolume(playlist);
                     break;
+                case SDLK_1:
+                    repeatSongOneTime(playlist);
+                    break;
+                case SDLK_i:
+                    repeatSongInfinitely(playlist);
+                    break;
+
             }
         }
         TestPlaylist(); //Test playlist functionality (can comment out)      
@@ -173,7 +186,7 @@ int main(){
     if (playlist) {
         clearPlaylist(playlist); //Free playlist memory if allocated
     }
-
+    
 
     // Quit SDL2_mixer
     Mix_CloseAudio();

@@ -228,3 +228,14 @@ void clearPlaylist(Playlist* playlist) {
     playlist->currentTrack->music = NULL;
     free(playlist);
 }
+
+void repeatSongOneTime(Playlist* playlist) {
+
+    Mix_PlayMusic(playlist->currentTrack->music, 1);
+};
+
+void repeatSongInfinitely(Playlist* playlist) {
+   
+    Mix_PlayMusic(playlist->currentTrack->music, -1);
+  
+};

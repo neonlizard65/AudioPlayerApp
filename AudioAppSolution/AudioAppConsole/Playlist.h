@@ -60,4 +60,9 @@ void playSongFromBeginningOrPrev(Playlist* playlist);
 void increasePlaylistVolume(Playlist* playlist);
 //Decreases the song's volume
 void decreasePlaylistVolume(Playlist* playlist);
+
+void repeatSongOneTime(Playlist* playlist);
+
+void repeatSongInfinitely(Playlist* playlist);
+
 #endif /*PLAYLIST.H*/

@@ -17,8 +17,13 @@ typedef struct Song {
 	char title[MAX_TITLE_LENGTH];
 	char artist[MAX_ARTIST_LENGTH];
 	char album[MAX_ALBUM_LENGTH];
+	
 }Song;
 
-void createSong(Song* song);
+Song* createSong(char* title, char* artist, char* album);
+
+void clearSong(Song* song);
+
+void printSong(Song* song);
 
 #endif /*SONG.H*/
