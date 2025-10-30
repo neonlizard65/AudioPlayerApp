@@ -120,10 +120,6 @@ int main(){
 
     bool quit = false; //Flag for quitting
 
-    Song* song1 = createSong("CEREMONY", "Stray Kids", "KARMA");
-    printSong(song1);
-    clearSong(song1);
-
     //Write code inside of this loop
     while (!quit) {
         SDL_Event e;

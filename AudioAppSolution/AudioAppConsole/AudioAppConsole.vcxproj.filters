@@ -21,7 +21,7 @@
     <ClCompile Include="Playlist.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Songs.c">
+    <ClCompile Include="Song.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,8 +29,14 @@
     <ClInclude Include="Playlist.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Songs.h">
+    <ClInclude Include="Song.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.gitignore" />
   </ItemGroup>
 </Project>

@@ -2,7 +2,6 @@
 #define SONG_H
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
-#include "Playlist.h"
 
 #define MAX_TITLE_LENGTH 100 //Max number of symbols in the song title
 #define MAX_ARTIST_LENGTH 100 //Max number of symbols in the song artist
@@ -20,7 +19,7 @@ typedef struct Song {
 	
 }Song;
 
-Song* createSong(char* title, char* artist, char* album);
+int createSong(Song*, char* title, char* artist, char* album);
 
 void clearSong(Song* song);
 

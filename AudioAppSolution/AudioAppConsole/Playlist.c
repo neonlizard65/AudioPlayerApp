@@ -5,8 +5,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <string.h>
-#include "Playlist.h"
 #include <Windows.h>
+#include "Song.h"
+#include "Playlist.h"
 
 //Helper function to stop and free Music from a playlist
 //static to not be available by other files
@@ -26,7 +27,9 @@ static void playMusic(Playlist* playlist) {
     playlist->currentTrack->music = Mix_LoadMUS(playlist->tracks[playlist->currentTrackIndex]);
     Mix_PlayMusic(playlist->currentTrack->music, 0);
     playlist->isPlaying = true;
-    strcpy_s(playlist->currentTrack->title, 100, playlist->tracks[playlist->currentTrackIndex]);
+
+    // TODO: 
+    // createSong(playlist->currentTrack, );
     printf("Position: %d\tIndex: %d\tSong: %s\n", playlist->currentTrackPosition, playlist->currentTrackIndex, playlist->currentTrack->title);
 }
 

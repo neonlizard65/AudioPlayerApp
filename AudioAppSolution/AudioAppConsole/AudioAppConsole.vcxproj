@@ -131,6 +131,7 @@
     <ClCompile Include="Song.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Label.h" />
     <ClInclude Include="Playlist.h" />
     <ClInclude Include="Song.h" />
   </ItemGroup>
